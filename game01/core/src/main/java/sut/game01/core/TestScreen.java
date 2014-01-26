@@ -2,6 +2,7 @@ package sut.game01.core;
 
 import playn.core.ImageLayer;
 import playn.core.PlayN;
+import playn.core.Pointer;
 import playn.core.util.Callback;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
@@ -29,9 +30,18 @@ public class TestScreen extends Screen {
 
             }
         });
-        Image back = assets().getImage("images/backbutton.png");
+        Image backbutton = assets().getImage("images/backbutton.png");
         ImageLayer bgLayer = graphics().createImageLayer(bgImage);
+        ImageLayer backLayer = graphics().createImageLayer(backbutton);
+
+        backLayer.addListener(new Pointer.Adapter(){
+            @Override
+            public void onPointerEnd(Pointer.Event event) {
+                ss.remove(TestScreen.this);
+            }
+        });
         layer.add(bgLayer);
+        layer.add(backLayer);
 
 
     }

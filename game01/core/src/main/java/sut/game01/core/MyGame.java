@@ -1,13 +1,10 @@
 package sut.game01.core;
 
-import static playn.core.PlayN.*;
-
 import playn.core.*;
 import playn.core.util.Clock;
+import sut.game01.core.screen.HomeScreen;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
-
-import java.awt.*;
 
 public class MyGame extends Game.Default {
     private static final int UPDATE_RATE=25;

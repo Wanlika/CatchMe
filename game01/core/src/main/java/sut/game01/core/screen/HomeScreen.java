@@ -40,7 +40,7 @@ public class HomeScreen extends UIScreen {
                 .addStyles(Style.FONT.is(HomeScreen.TITLE_FONT)));
         root.add(new Button("Start").onClick(new UnitSlot(){
             public void onEmit(){
-                ss.push(new TestScreen(ss));
+                ss.push(new GameScreen(ss));
             }
         }));
 

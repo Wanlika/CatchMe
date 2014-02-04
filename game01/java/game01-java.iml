@@ -14,6 +14,8 @@
     <orderEntry type="library" name="Maven: com.samskivert:pythagoras:1.3.2" level="project" />
     <orderEntry type="library" name="Maven: com.threerings:tripleplay:1.8" level="project" />
     <orderEntry type="library" name="Maven: com.threerings:react:1.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.jbox2d:jbox2d-library:2.1.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.4" level="project" />
     <orderEntry type="module" module-name="game01-assets" />
     <orderEntry type="library" name="Maven: com.googlecode.playn:playn-java:1.8" level="project" />
     <orderEntry type="library" name="Maven: org.lwjgl.lwjgl:lwjgl:2.9.0" level="project" />

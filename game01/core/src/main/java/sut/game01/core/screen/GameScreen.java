@@ -1,11 +1,15 @@
 package sut.game01.core.screen;
 
+import org.jbox2d.callbacks.ContactImpulse;
+import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.callbacks.DebugDraw;
+import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.contacts.Contact;
 import playn.core.*;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
@@ -38,7 +42,7 @@ public class GameScreen extends Screen {
 
     private World world;
     private DebugDrawBox2D debugDraw;
-    private boolean showDebugDraw=true;
+    private boolean showDebugDraw=false;
     ////////////////////////////
 
     @Override
@@ -71,13 +75,119 @@ public class GameScreen extends Screen {
         });
         layer.add(bgLayer);
         layer.add(backLayer);
+
         /////////////////////////////////////
 
+        createWorld();
+
+        //add character
+        s = new Sasuke(world,200f,150f);
+        layer.add(s.layer());
+        g = new GingerBread(world,300f,150f);
+        layer.add(g.layer());
+        ////////////////////////////////////
+
+        PlayN.keyboard().setListener(new Keyboard.Listener() {
+            @Override
+            public void onKeyDown(Keyboard.Event event) {
+
+            }
+
+            @Override
+            public void onKeyTyped(Keyboard.TypedEvent event) {
+
+            }
+
+            @Override
+            public void onKeyUp(Keyboard.Event event) {
+                if(event.key()== Key.UP){
+                    s.getBody().applyForce(new Vec2(-10f, -500f), s.getBody().getPosition());
+                }
+                else if (event.key()==Key.LEFT){
+
+                    s.getBody().applyLinearImpulse(new Vec2(-50f, 0f), s.getBody().getPosition());
+
+                }
+                else if(event.key()==Key.RIGHT){
+
+                    s.getBody().applyLinearImpulse(new Vec2(50f, 0f), s.getBody().getPosition());
+                }
+
+                if (event.key()== Key.S){
+
+                   g.getBody().applyForce(new Vec2(-20f, -500f), g.getBody().getPosition());
+                }
+                else if (event.key()==Key.Z){
+
+                    g.getBody().applyLinearImpulse(new Vec2(-50f, 0f), g.getBody().getPosition());
+                }
+                else if (event.key()==Key.C){
+
+                    g.getBody().applyLinearImpulse(new Vec2(50f, 0f), g.getBody().getPosition());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void update(int delta) {
+        super.update(delta);
+        s.update(delta);
+        g.update(delta);
+        world.step(0.033f,10,10);
+    }
+
+    @Override
+    public void paint(Clock clock) {
+        super.paint(clock);
+        s.paint(clock);
+        g.paint(clock);
+        if (showDebugDraw){
+            debugDraw.getCanvas().clear();
+            world.drawDebugData();
+        }
+    }
+
+    public GameScreen(ScreenStack ss){
+        this.ss = ss;
+    }
+
+    public void createWorld(){
         //create world
         Vec2 gravity = new Vec2(0.0f,10.0f);
         world = new World(gravity,true);
         world.setWarmStarting(true);
         world.setAutoClearForces(true);
+        world.setContactListener(new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+                if (contact.getFixtureA().getBody()==g.getBody()||
+                        contact.getFixtureB().getBody()==g.getBody()){
+                    g.contact(contact);
+
+                }
+                if (contact.getFixtureA().getBody()==s.getBody()||
+                        contact.getFixtureB().getBody()==s.getBody()){
+                    s.contact(contact);
+
+                }
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold manifold) {
+
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse contactImpulse) {
+
+            }
+        });
         ////////////////////////////////////
 
         // set up debug
@@ -103,34 +213,12 @@ public class GameScreen extends Screen {
         groundShape.setAsEdge(new Vec2(0f,16f),new Vec2(24f,16f));
         ground.createFixture(groundShape,0f);
         //////////////
+        groundShape.setAsEdge(new Vec2(1f,0f),new Vec2(1f,18f));
+        ground.createFixture(groundShape,0f);
+        groundShape.setAsEdge(new Vec2(23f,0f),new Vec2(23f,18f));
+        ground.createFixture(groundShape,0f);
 
-        //add character
-        s = new Sasuke(320f,240f);
-        layer.add(s.layer());
-
-        g = new GingerBread(world,200f,150f);
-        layer.add(g.layer());
-        ////////////////////////////////////
-    }
-
-    @Override
-    public void update(int delta) {
-        super.update(delta);
-        s.update(delta,320f,240f);
-        g.update(delta,200f,150f);
-        world.step(0.033f,10,10);
-    }
-
-    @Override
-    public void paint(Clock clock) {
-        super.paint(clock);
-        if (showDebugDraw){
-            debugDraw.getCanvas().clear();
-            world.drawDebugData();
-        }
-    }
-
-    public GameScreen(ScreenStack ss){
-        this.ss = ss;
+        groundShape.setAsEdge(new Vec2(0f,0f),new Vec2(24f,0f));
+        ground.createFixture(groundShape,0f);
     }
 }

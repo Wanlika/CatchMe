@@ -6,6 +6,7 @@ import tripleplay.game.ScreenStack;
 import tripleplay.game.UIScreen;
 import tripleplay.ui.*;
 import tripleplay.ui.layout.AxisLayout;
+import playn.core.*;
 
 
 
@@ -27,22 +28,64 @@ public class HomeScreen extends UIScreen {
     }
 
     @Override
-    public void wasShown() {
-        super.wasShown();
-        root =  iface.createRoot(
-                AxisLayout.vertical().gap(15),
-                SimpleStyles.newSheet(),layer);
-        root.addStyles(Style.BACKGROUND.is(Background.
-                bordered(0xFFCCCCCC, 0xFF99CCFF, 5).
-                inset(5, 10)));
-        root.setSize(width(),height());
-        root.add(new Label("HomeScreen")
-                .addStyles(Style.FONT.is(HomeScreen.TITLE_FONT)));
-        root.add(new Button("Start").onClick(new UnitSlot(){
-            public void onEmit(){
+    public void wasAdded() {
+        super.wasAdded();
+        Image bgImage = assets().getImage("images/other/bgCatchMe.png");
+        ImageLayer bgLayer = graphics().createImageLayer(bgImage);
+        layer.add(bgLayer);
+        Image startImage = assets().getImage("images/other/StartButton.png");
+        ImageLayer startLayer = graphics().createImageLayer(startImage);
+        startLayer.setTranslation(170f,360f);
+        startLayer.addListener(new Pointer.Adapter(){
+            @Override
+            public void onPointerEnd(Pointer.Event event) {
+                super.onPointerEnd(event);
                 ss.push(new GameScreen(ss));
             }
-        }));
+        });
+        layer.add(startLayer);
 
+        Image settingImage = assets().getImage("images/other/SettingButton.png");
+        ImageLayer settingLayer = graphics().createImageLayer(settingImage);
+        settingLayer.setTranslation(320f,360f);
+        settingLayer.addListener(new Pointer.Adapter(){
+            @Override
+            public void onPointerEnd(Pointer.Event event) {
+                super.onPointerEnd(event);
+                ss.push(new SettingScreen(ss));
+            }
+        });
+        layer.add(settingLayer);
+
+//        root.add(new Button("Start").onClick(new UnitSlot() {
+//            @Override
+//            public void onEmit() {
+//                ss.push(new GameScreen(ss));
+//            }
+//        }));
     }
+
+//    @Override
+//    public void wasShown() {
+//        super.wasShown();
+//        root =  iface.createRoot(
+//                AxisLayout.vertical().gap(15),
+//                SimpleStyles.newSheet(),layer);
+//        root.addStyles(Style.BACKGROUND.is(Background.
+//                bordered(0xFFCCCCCC, 0xFF99CCFF, 5).
+//                inset(5, 10)));
+//        root.setSize(width(),height());
+//        root.add(new Label("HomeScreen")
+//                .addStyles(Style.FONT.is(HomeScreen.TITLE_FONT)));
+//        root.add(new Button("Start").onClick(new UnitSlot(){
+//            public void onEmit(){
+//                ss.push(new GameScreen(ss));
+//            }
+//        }));
+//        root.add(new Button("Setting").onClick(new UnitSlot(){
+//            public void onEmit(){
+//                ss.push(new SettingScreen(ss));
+//            }
+//        }));
+//    }
 }

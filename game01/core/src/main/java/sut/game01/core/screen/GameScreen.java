@@ -51,15 +51,6 @@ public class GameScreen extends Screen {
 
         //add bg and back button
         Image bgImage = assets().getImage("images/other/bg.png");
-        bgImage.addCallback(new Callback<Image>() {
-            @Override
-            public void onSuccess(Image result) {}
-
-            @Override
-            public void onFailure(Throwable cause) {
-
-            }
-        });
         ImageLayer bgLayer = graphics().createImageLayer(bgImage);
         Image backImage = assets().getImage("images/other/backbutton.png");
         ImageLayer backLayer = graphics().createImageLayer(backImage);
@@ -76,14 +67,15 @@ public class GameScreen extends Screen {
         layer.add(bgLayer);
         layer.add(backLayer);
 
+
         /////////////////////////////////////
 
         createWorld();
 
         //add character
-        s = new Sasuke(world,200f,150f);
+        s = new Sasuke(world,200,16/M_PER_PIXEL);
         layer.add(s.layer());
-        g = new GingerBread(world,300f,150f);
+        g = new GingerBread(world,350f,16f/M_PER_PIXEL);
         layer.add(g.layer());
         ////////////////////////////////////
 

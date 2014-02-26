@@ -8,6 +8,7 @@ import playn.core.*;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
 import sut.game01.core.screen.GameScreen;
+import static playn.core.PlayN.*;
 
 /**
  * Created by Yambok on 4/2/2557.
@@ -36,8 +37,8 @@ public class Sasuke {
             @Override
             public void onSuccess(Sprite result) {
                 sprite.setSprite(spriteIndex);
-                sprite.layer().setOrigin((sprite.width()-60f) / 2f, sprite.height() / 2f);
-                sprite.layer().addListener(new Pointer.Adapter(){
+                sprite.layer().setOrigin((sprite.width() - 60f) / 2f, sprite.height() / 2f);
+                sprite.layer().addListener(new Pointer.Adapter() {
                     @Override
                     public void onPointerEnd(Pointer.Event event) {
                         state = State.KICK;
@@ -45,7 +46,6 @@ public class Sasuke {
                         e = 0;
                     }
                 });
-
                 bodySasuke = initPhysicsBody(world,GameScreen.M_PER_PIXEL*x_px,GameScreen.M_PER_PIXEL*y_px);
 
                 hasLoaded = true;

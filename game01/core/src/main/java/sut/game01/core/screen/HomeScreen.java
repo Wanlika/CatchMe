@@ -30,7 +30,7 @@ public class HomeScreen extends UIScreen {
     @Override
     public void wasAdded() {
         super.wasAdded();
-        Image bgImage = assets().getImage("images/other/bgCatchMe.png");
+        Image bgImage = assets().getImage("images/other/bgCatchMe2.png");
         ImageLayer bgLayer = graphics().createImageLayer(bgImage);
         layer.add(bgLayer);
         Image startImage = assets().getImage("images/other/StartButton.png");

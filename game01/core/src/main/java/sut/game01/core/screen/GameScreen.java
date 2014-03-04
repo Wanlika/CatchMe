@@ -15,6 +15,7 @@ import playn.core.util.Callback;
 import playn.core.util.Clock;
 import sut.game01.core.debug.DebugDrawBox2D;
 import sut.game01.core.sprite.GingerBread;
+import sut.game01.core.sprite.Mice;
 import sut.game01.core.sprite.Sasuke;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
@@ -43,6 +44,7 @@ public class GameScreen extends Screen {
     private World world;
     private DebugDrawBox2D debugDraw;
     private boolean showDebugDraw=false;
+    private Mice m;
     ////////////////////////////
 
     @Override
@@ -50,7 +52,7 @@ public class GameScreen extends Screen {
         super.wasAdded();
 
         //add bg and back button
-        Image bgImage = assets().getImage("images/other/bg.png");
+        Image bgImage = assets().getImage("images/other/bgRoom.png");
         ImageLayer bgLayer = graphics().createImageLayer(bgImage);
         Image backImage = assets().getImage("images/other/backbutton.png");
         ImageLayer backLayer = graphics().createImageLayer(backImage);
@@ -77,6 +79,8 @@ public class GameScreen extends Screen {
         layer.add(s.layer());
         g = new GingerBread(world,350f,16f/M_PER_PIXEL);
         layer.add(g.layer());
+
+        m = new Mice(100f,100f);
         ////////////////////////////////////
 
         PlayN.keyboard().setListener(new Keyboard.Listener() {

@@ -1,9 +1,10 @@
 package sut.game01.core.screen;
 
 import playn.core.*;
+import playn.core.util.Clock;
+import sut.game01.core.sprite.Mice;
 import tripleplay.game.ScreenStack;
 import tripleplay.game.UIScreen;
-
 import static playn.core.PlayN.*;
 
 /**
@@ -12,6 +13,8 @@ import static playn.core.PlayN.*;
 public class SettingScreen extends UIScreen{
 
     private final ScreenStack ss;
+    private Mice m;
+
 
     public SettingScreen(ScreenStack ss) {
         this.ss = ss;
@@ -21,7 +24,7 @@ public class SettingScreen extends UIScreen{
     public void wasAdded() {
         super.wasAdded();
 
-        Image bgImage = assets().getImage("images/other/bg.png");
+        Image bgImage = assets().getImage("images/other/bgCatchMe.png");
         ImageLayer bgLayer = graphics().createImageLayer(bgImage);
         Image backImage = assets().getImage("images/other/backbutton.png");
         ImageLayer backLayer = graphics().createImageLayer(backImage);
@@ -37,5 +40,21 @@ public class SettingScreen extends UIScreen{
         });
         layer.add(bgLayer);
         layer.add(backLayer);
+
+        m = new Mice(20f,400f);
+        layer.add(m.layer());
+
+    }
+
+    @Override
+    public void update(int delta) {
+        super.update(delta);
+        m.update(delta);
+    }
+
+    @Override
+    public void paint(Clock clock) {
+        super.paint(clock);
+        m.paint(clock);
     }
 }

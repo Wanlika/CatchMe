@@ -1,0 +1,6 @@
+{
+    "urls":["images/sprite/cheese.png"],
+    "sprites":[
+        {"id": "idle_1" , "url": 0 , "x": 0 , "y": 0 , "w": 52 , "h": 42}
+    ]
+}

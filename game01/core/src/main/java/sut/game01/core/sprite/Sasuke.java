@@ -56,7 +56,6 @@ public class Sasuke {
 
             }
         });
-
         PlayN.keyboard().setListener(new Keyboard.Listener() {
             @Override
             public void onKeyDown(Keyboard.Event event) {
@@ -114,6 +113,7 @@ public class Sasuke {
 
         body.setLinearDamping(0.2f);
         body.setTransform(new Vec2(x,y),0f);
+        body.setFixedRotation(true);
 
         return body;
     }

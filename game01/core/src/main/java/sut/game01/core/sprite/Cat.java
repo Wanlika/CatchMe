@@ -6,19 +6,10 @@ import playn.core.PlayN;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
 
-
-import org.jbox2d.collision.shapes.PolygonShape;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.*;
-import org.jbox2d.dynamics.contacts.Contact;
-import playn.core.*;
-import playn.core.util.Callback;
-import playn.core.util.Clock;
-import sut.game01.core.screen.GameScreen;
 /**
- * Created by Yambok on 3/3/2557.
+ * Created by Yambok on 9/3/2557.
  */
-public class Mice {
+public class Cat {
     private Sprite sprite;
     private int spriteIndex=0;
     private boolean hasLoaded = false;
@@ -32,15 +23,15 @@ public class Mice {
     private int n;
 
     public enum State{
-        IDLE,RUN
+        HIT,RUN
     };
 
-    private State state = State.RUN;
+    private State state = State.HIT;
     private int e=0;
     private int offset=0;
 
-    public Mice(final float x_px,final float y_px){
-        this.sprite = SpriteLoader.getSprite("images/sprite/mouse.json");
+    public Cat(final float x_px,final float y_px){
+        this.sprite = SpriteLoader.getSprite("images/sprite/Cat.json");
         this.sprite.addCallback(new Callback<Sprite>() {
             @Override
             public void onSuccess(Sprite result) {
@@ -71,13 +62,13 @@ public class Mice {
         e+=delta;
         if (e > 150){
             switch (state){
-                case RUN: offset =0;
-                    n = n+40;
+                case HIT: offset =0;
+                    n = n+60;
 
                     break;
 
             }
-            spriteIndex = offset + ((spriteIndex+1)%7);
+            spriteIndex = offset + ((spriteIndex+1)%2);
             sprite.setSprite(spriteIndex);
             e=0;
 
@@ -103,4 +94,3 @@ public class Mice {
         return this.body;
     }
 }
-

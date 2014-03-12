@@ -26,7 +26,7 @@ public class Cat {
         HIT,RUN
     };
 
-    private State state = State.HIT;
+    private State state = State.RUN;
     private int e=0;
     private int offset=0;
 
@@ -62,6 +62,8 @@ public class Cat {
         e+=delta;
         if (e > 150){
             switch (state){
+                case RUN:offset=0;
+                    break;
                 case HIT: offset =0;
                     n = n+60;
 
@@ -77,16 +79,16 @@ public class Cat {
 
     public void paint(Clock clock) {
         if (!hasLoaded)return;
-        if ((x+n)>=640+sprite.layer().width()){
-            sprite.layer().setTranslation(x,y);
-            offset = 0;
-            spriteIndex=-1;
-            n = 0;
-        }
-        else {
-            sprite.layer().setTranslation(x+n,y);
-        }
-
+//        if ((x+n)>=640+sprite.layer().width()){
+//            sprite.layer().setTranslation(x,y);
+//            offset = 0;
+//            spriteIndex=-1;
+//            n = 0;
+//        }
+//        else {
+//            sprite.layer().setTranslation(x+n,y);
+//        }
+        sprite.layer().setTranslation(x,y);
 
     }
 

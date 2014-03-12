@@ -33,14 +33,14 @@ public class HomeScreen extends UIScreen {
         Image bgImage = assets().getImage("images/other/bgCatchMe2.png");
         ImageLayer bgLayer = graphics().createImageLayer(bgImage);
         layer.add(bgLayer);
-        Image startImage = assets().getImage("images/other/StartButton.png");
+        Image startImage = assets().getImage("images/other/SelectButton.png");
         ImageLayer startLayer = graphics().createImageLayer(startImage);
         startLayer.setTranslation(170f,360f);
         startLayer.addListener(new Pointer.Adapter(){
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 super.onPointerEnd(event);
-                ss.push(new GameScreen(ss));
+                ss.push(new SelectScreen(ss));
             }
         });
         layer.add(startLayer);

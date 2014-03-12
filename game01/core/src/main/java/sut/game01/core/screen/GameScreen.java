@@ -20,6 +20,8 @@ import static playn.core.PlayN.*;
 
 import tripleplay.ui.*;
 
+import java.util.ArrayList;
+
 
 /**
  * Created by BkFamily on 21/1/2557.
@@ -37,24 +39,19 @@ public class GameScreen extends Screen {
     private boolean showDebugDraw=false;
     private Body ground;
 
-
-    private float x_start;
-    private float x_end;
-    private float y_start;
-    private float y_end;
     private ImageLayer powerLayer;
     private Image powerbar;
-    private ImageLayer tableLayer;
-    private Image tableImage;
     private Cheese c;
     private Vase v;
+    private Oldlady l;
+    private Mice m;
 
+    private ArrayList<Cheese> cheeses = new ArrayList<Cheese>();
+    private int i=0;
 
     @Override
     public void wasAdded(){
         super.wasAdded();
-
-
         Image bgImage = assets().getImage("images/other/bgRoom.png");
         ImageLayer bgLayer = graphics().createImageLayer(bgImage);
         Image backImage = assets().getImage("images/other/backbutton.png");
@@ -66,7 +63,6 @@ public class GameScreen extends Screen {
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 ss.remove(GameScreen.this);
-
             }
         });
         layer.add(bgLayer);
@@ -76,68 +72,79 @@ public class GameScreen extends Screen {
         powerLayer.setOrigin(powerbar.width()/2,powerbar.height()/2);
         powerLayer.setTranslation(320f, 10f);
         layer.add(powerLayer);
-
-        tableImage = assets().getImage("images/other/smalltable.png");
-        tableLayer = graphics().createImageLayer(tableImage);
+        Image tableImage = assets().getImage("images/other/smalltable.png");
+        ImageLayer tableLayer = graphics().createImageLayer(tableImage);
         tableLayer.setOrigin(84/2,118/2);
-        tableLayer.setTranslation(500f,14f/M_PER_PIXEL);
+        tableLayer.setTranslation(500f, 14f / M_PER_PIXEL);
         layer.add(tableLayer);
 
-        createWorld();
-        createBox(world,500f*M_PER_PIXEL,14f);
-        //add character
+        Image sofaImage = assets().getImage("images/other/sofa300-300.png");
+        ImageLayer sofaLayer = graphics().createImageLayer(sofaImage);
+        sofaLayer.setSize(150,150);
+        sofaLayer.setOrigin(75,75);
+        sofaLayer.setTranslation(300,13.5f/M_PER_PIXEL);
+        layer.add(sofaLayer);
 
-        c = new Cheese(world,100f,16f/M_PER_PIXEL);
-        layer.add(c.layer());
+        createWorld();
+        createBox(world,500f*M_PER_PIXEL,14f,84,110);
+        createBox(world,300*M_PER_PIXEL,14f,150,150);
+//        createBox(world,300f*M_PER_PIXEL,13.5f,30,150);
+//        createBox(world,400f*M_PER_PIXEL,10f,100,30);
+
+        m = new Mice(70f,15f/M_PER_PIXEL);
+        layer.add(m.layer());
 
         v = new Vase(world,500f,12f/M_PER_PIXEL);
         layer.add(v.layer());
-        ////////////////////////////////////
 
-        pointer().setListener(new Pointer.Listener() {
-            @Override
-            public void onPointerStart(Pointer.Event event) {
-                x_start = event.localX();
-                y_start = event.localY();
-            }
+        l = new Oldlady(100f,10f/M_PER_PIXEL);
+        layer.add(l.layer());
+        cheeses.add(new Cheese(world,120f,16f/M_PER_PIXEL));
+        for (Cheese nc:cheeses){
+            layer.add(nc.layer());
+        }
 
+        pointer().setListener(new Pointer.Adapter() {
             @Override
             public void onPointerEnd(Pointer.Event event) {
-                x_end = event.localX();
-                y_end = event.localY();
                 powerLayer.setSize(powerbar.width(),powerbar.height());
-                c.getBody().applyLinearImpulse(new Vec2((x_start - x_end)/6, (y_start - y_end)/6), c.getBody().getPosition());
+                m.micethrow();
+                i+=1;
+                if (i<3){
+                    cheeses.add(new Cheese(world,120f,16f/M_PER_PIXEL));
+                    layer.add(cheeses.get(i).layer());
+                }
+
 
             }
-
             @Override
             public void onPointerDrag(Pointer.Event event) {
-
                 powerLayer.setSize(powerbar.width()+((powerLayer.width()/event.localX())),powerbar.height());
-
-
-            }
-
-            @Override
-            public void onPointerCancel(Pointer.Event event) {
-
-            }
+           }
         });
     }
 
     @Override
     public void update(int delta) {
         super.update(delta);
-        c.update(delta);
+        for (Cheese nc : cheeses){
+            nc.update(delta);
+        }
         v.update(delta);
+        m.update(delta);
+        l.update(delta);
         world.step(0.033f,10,10);
     }
 
     @Override
     public void paint(Clock clock) {
         super.paint(clock);
-        c.paint(clock);
+        for (Cheese nc : cheeses){
+            nc.paint(clock);
+        }
         v.paint(clock);
+        m.paint(clock);
+        l.paint(clock);
         if (showDebugDraw){
             debugDraw.getCanvas().clear();
             world.drawDebugData();
@@ -157,19 +164,20 @@ public class GameScreen extends Screen {
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
-                if ((contact.getFixtureA().getBody()==c.getBody())&&(contact.getFixtureB().getBody()==v.getBody())){
-                    v.contact(contact);
-                    c.contact(contact);
-                }else if ((contact.getFixtureA().getBody()==v.getBody())&&
-                        (contact.getFixtureB().getBody()==c.getBody())){
-                    v.contact(contact);
-                    c.contact(contact);
+                for (Cheese nc:cheeses){
+                    if ((contact.getFixtureA().getBody()==nc.getBody())&&(contact.getFixtureB().getBody()==v.getBody())){
+                        v.contact(contact);
+                        nc.contact(contact);
+                    }else if ((contact.getFixtureA().getBody()==v.getBody())&&
+                            (contact.getFixtureB().getBody()==nc.getBody())){
+                        v.contact(contact);
+                        nc.contact(contact);
+                    }
                 }
             }
 
             @Override
             public void endContact(Contact contact) {
-
             }
 
             @Override
@@ -179,7 +187,6 @@ public class GameScreen extends Screen {
 
             @Override
             public void postSolve(Contact contact, ContactImpulse contactImpulse) {
-
             }
         });
         ////////////////////////////////////
@@ -219,7 +226,7 @@ public class GameScreen extends Screen {
         return ground;
     }
 
-    public Body createBox(World world,float x,float y){
+    public Body createBox(World world,float x,float y,float w,float h){
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
@@ -228,8 +235,8 @@ public class GameScreen extends Screen {
 
         ///EdgeShape shape = new EdgeShape();
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox((84*GameScreen.M_PER_PIXEL/2),
-                (118*GameScreen.M_PER_PIXEL/2));
+        shape.setAsBox((w*GameScreen.M_PER_PIXEL/2),
+                (h*GameScreen.M_PER_PIXEL/2));
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 0.2f;
@@ -241,4 +248,5 @@ public class GameScreen extends Screen {
         body.setTransform(new Vec2(x,y),0f);
         return body;
     }
+
 }

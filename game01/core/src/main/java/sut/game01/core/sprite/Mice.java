@@ -32,30 +32,29 @@ public class Mice {
     private int n;
 
     public enum State{
-        IDLE,RUN
+        IDLE,RUN,THROW
     };
 
-    private State state = State.RUN;
+    private State state = State.IDLE;
     private int e=0;
     private int offset=0;
 
     public Mice(final float x_px,final float y_px){
-        this.sprite = SpriteLoader.getSprite("images/sprite/mouse.json");
+        this.sprite = SpriteLoader.getSprite("images/sprite/mice.json");
         this.sprite.addCallback(new Callback<Sprite>() {
             @Override
             public void onSuccess(Sprite result) {
                 sprite.setSprite(spriteIndex);
                 sprite.layer().setOrigin((sprite.width()) / 2f, (sprite.height()) / 2f);
-                sprite.layer().setTranslation(x_px,y_px);
+                sprite.layer().setTranslation(x_px, y_px);
                 hasLoaded = true;
                 y = y_px;
                 x = x_px;
-
             }
 
             @Override
             public void onFailure(Throwable cause) {
-                PlayN.log().error("Error loading image!",cause);
+                PlayN.log().error("Error loading image!", cause);
             }
         });
     }
@@ -71,31 +70,39 @@ public class Mice {
         e+=delta;
         if (e > 150){
             switch (state){
-                case RUN: offset =0;
-                    n = n+40;
-
+                case IDLE: offset=0;
+                    spriteIndex=-1;
+                    break;
+                case THROW:offset=2;
+                    state = State.IDLE;
+                    break;
+                case RUN: offset =4;
+//                    n = n+40;
                     break;
 
             }
-            spriteIndex = offset + ((spriteIndex+1)%7);
+            spriteIndex = offset + ((spriteIndex+1)%2);
             sprite.setSprite(spriteIndex);
             e=0;
 
         }
+    } 
+    public void micethrow(){
+        state = State.THROW;
+        spriteIndex = 0;
     }
-
     public void paint(Clock clock) {
         if (!hasLoaded)return;
-        if ((x+n)>=640+sprite.layer().width()){
-            sprite.layer().setTranslation(x,y);
-            offset = 0;
-            spriteIndex=-1;
-            n = 0;
-        }
-        else {
-            sprite.layer().setTranslation(x+n,y);
-        }
-
+//        if ((x+n)>=640+sprite.layer().width()){
+//            sprite.layer().setTranslation(x,y);
+//            offset = 0;
+//            spriteIndex=-1;
+//            n = 0;
+//        }
+//        else {
+//            sprite.layer().setTranslation(x+n,y);
+//        }
+          sprite.layer().setTranslation(x,y);
 
     }
 

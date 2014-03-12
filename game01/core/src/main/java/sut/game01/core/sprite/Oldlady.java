@@ -26,7 +26,7 @@ public class Oldlady {
         IDLE,WAKE,RUN
     };
 
-    private State state = State.RUN;
+    private State state = State.IDLE;
     private int e=0;
     private int offset=0;
 
@@ -60,10 +60,12 @@ public class Oldlady {
         if (!hasLoaded) return;
 
         e+=delta;
-        if (e > 150){
+        if (e > 500){
             switch (state){
+                case IDLE:offset=0;
+                    break;
                 case RUN: offset =4;
-                    n = n+50;
+//                    n = n+50;
 
                     break;
 
@@ -77,16 +79,16 @@ public class Oldlady {
 
     public void paint(Clock clock) {
         if (!hasLoaded)return;
-        if ((x+n)>=640+sprite.layer().width()){
-            sprite.layer().setTranslation(x,y);
-            offset = 0;
-            spriteIndex=-1;
-            n = 0;
-        }
-        else {
-            sprite.layer().setTranslation(x+n,y);
-        }
-
+//        if ((x+n)>=640+sprite.layer().width()){
+//            sprite.layer().setTranslation(x,y);
+//            offset = 0;
+//            spriteIndex=-1;
+//            n = 0;
+//        }
+//        else {
+//            sprite.layer().setTranslation(x+n,y);
+//        }
+        sprite.layer().setTranslation(x,y);
 
     }
 

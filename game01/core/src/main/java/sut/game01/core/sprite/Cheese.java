@@ -21,6 +21,10 @@ public class Cheese {
     private Body other;
     private boolean contacted;
     private int contactCheck;
+    private float x_start;
+    private float y_start;
+    private float x_end;
+    private float y_end;
 
     public enum State{
         IDLE
@@ -49,6 +53,22 @@ public class Cheese {
             public void onFailure(Throwable cause) {
                 PlayN.log().error("Error loading image!",cause);
             }
+        });
+        sprite.layer().addListener(new Pointer.Adapter(){
+            @Override
+            public void onPointerStart(Pointer.Event event) {
+
+                x_start = event.localX();
+                y_start = event.localY();
+            }
+
+            @Override
+            public void onPointerEnd(Pointer.Event event) {
+                x_end = event.localX();
+                y_end = event.localY();
+                body.applyLinearImpulse(new Vec2((x_start - x_end) / 6, (y_start - y_end) / 6), body.getPosition());
+            }
+
         });
     }
 

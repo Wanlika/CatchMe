@@ -46,9 +46,9 @@ public class SettingScreen extends UIScreen{
 
         m = new Mice(100f,300f);
         layer.add(m.layer());
-        c = new Cat(50f,300f);
+        c = new Cat(200f,300f);
         layer.add(c.layer());
-        l = new Oldlady(0f,300f);
+        l = new Oldlady(400f,300f);
         layer.add(l.layer());
 
     }

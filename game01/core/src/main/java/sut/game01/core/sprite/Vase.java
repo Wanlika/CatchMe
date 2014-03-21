@@ -4,12 +4,13 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.contacts.Contact;
+import playn.core.Graphics;
 import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
 import sut.game01.core.screen.GameScreen;
-
+import static playn.core.PlayN.*;
 /**
  * Created by Yambok on 8/3/2557.
  */
@@ -22,6 +23,7 @@ public class Vase {
     private Body other;
     private boolean contacted;
     private int contactCheck;
+    private java.awt.Graphics g;
 
     public enum State{
         IDLE,BROKE
@@ -121,7 +123,6 @@ public class Vase {
         sprite.layer().setTranslation((body.getPosition().x/ GameScreen.M_PER_PIXEL),
                 (body.getPosition().y/GameScreen.M_PER_PIXEL));
         sprite.layer().setRotation(body.getAngle());
-
 
     }
 

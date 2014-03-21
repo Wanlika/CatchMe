@@ -26,12 +26,12 @@ import playn.core.util.Callback;
 import static playn.core.PlayN.log;
 
 /**
- * A Sprite is a collection of {@link sut.game01.core.sprite.SpriteImage}s.
+ * A Sprite is a collection of {@link SpriteImage}s.
  * <p/>
  * Create a Sprite from an image and json data using
- * {@link sut.game01.core.sprite.SpriteLoader#getSprite(String imageUrl, String jsonUrl)}.
+ * {@link SpriteLoader#getSprite(String imageUrl, String jsonUrl)}.
  * <p/>
- * Create a Sprite from json data using {@link sut.game01.core.sprite.SpriteLoader#getSprite(String json)}.
+ * Create a Sprite from json data using {@link SpriteLoader#getSprite(String json)}.
  * <p/>
  * To use, add {@link #layer()} to a {@link playn.core.Layer} in your game. To change sprites, call
  * {@link #setSprite(int)}.
@@ -48,7 +48,7 @@ public class Sprite {
     private boolean dataDone = false; // true when sprite data has finished loading
 
     /**
-     * Do not call directly. Create using {@link sut.game01.core.sprite.SpriteLoader#getSprite(String, String)}
+     * Do not call directly. Create using {@link SpriteLoader#getSprite(String, String)}
      */
     Sprite(ImageLayer imageLayer) {
         this.layer = imageLayer;
@@ -134,7 +134,7 @@ public class Sprite {
     }
 
     /**
-     * Add a {@link sut.game01.core.sprite.SpriteImage} to the sprites.
+     * Add a {@link SpriteImage} to the sprites.
      */
     void addSpriteImage(String key, SpriteImage spriteImage) {
         spriteIdMap.put(key, spriteImages.size());
@@ -185,7 +185,7 @@ public class Sprite {
     }
 
     /**
-     * Returns the {@link sut.game01.core.sprite.SpriteImage}s associated with this Sprite.
+     * Returns the {@link SpriteImage}s associated with this Sprite.
      */
     List<SpriteImage> spriteImages() {
         return spriteImages;

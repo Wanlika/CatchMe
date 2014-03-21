@@ -5,7 +5,8 @@ import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.callbacks.DebugDraw;
 import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.shapes.PolygonShape;
-import org.jbox2d.common.Vec2;
+//import org.jbox2d.common.Vec2;
+import org.jbox2d.common.*;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.contacts.Contact;
 import playn.core.*;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
  */
 public class GameScreen extends Screen {
     private final ScreenStack ss;
+
     //convert px to meter
     public static float M_PER_PIXEL = 1/26.666667f;//size of world
     private static int width = 24;//640px in physics unit(meter)
@@ -36,58 +38,76 @@ public class GameScreen extends Screen {
     //world
     private World world;
     private DebugDrawBox2D debugDraw;
-    private boolean showDebugDraw=false;
+    private boolean showDebugDraw=true;
+    private boolean hasLoaded = false;
+    private boolean win=false;
+    private boolean lose=false;
     private Body ground;
-
-    private ImageLayer powerLayer;
-    private Image powerbar;
-    private Cheese c;
+    private final static int state = 1;
+    private int i=0;
+    private ImageLayer timeLayer;
     private Vase v;
     private Oldlady l;
     private Mice m;
-
     private ArrayList<Cheese> cheeses = new ArrayList<Cheese>();
-    private int i=0;
+
+
+    public GameScreen(ScreenStack ss){
+        this.ss = ss;
+    }
 
     @Override
     public void wasAdded(){
         super.wasAdded();
-        Image bgImage = assets().getImage("images/other/bgRoom.png");
-        ImageLayer bgLayer = graphics().createImageLayer(bgImage);
-        Image backImage = assets().getImage("images/other/backbutton.png");
-        ImageLayer backLayer = graphics().createImageLayer(backImage);
-        backLayer.setSize(100, 100);
-        backLayer.setOrigin(backLayer.width() / 2, backLayer.height() / 2);
-        backLayer.setTranslation(50, 50);
+        win=false;
+        lose=false;
+
+        layer.add(graphics().createImageLayer(assets().getImage("images/other/bgRoom.png")));
+        ImageLayer backLayer = graphics().createImageLayer(assets().getImage("images/other/backbutton86-86.png"));
+        backLayer.setSize(50, 50);
+        backLayer.setOrigin(25,25).setTranslation(50f, 30);
         backLayer.addListener(new Pointer.Adapter() {
             @Override
             public void onPointerEnd(Pointer.Event event) {
-                ss.remove(GameScreen.this);
+                //ss.remove(GameScreen.this);
+                ss.push(new HomeScreen(ss));
             }
         });
-        layer.add(bgLayer);
         layer.add(backLayer);
-        powerbar = assets().getImage("images/other/powerbar.png");
-        powerLayer = graphics().createImageLayer(powerbar);
-        powerLayer.setOrigin(powerbar.width()/2,powerbar.height()/2);
-        powerLayer.setTranslation(320f, 10f);
-        layer.add(powerLayer);
-        Image tableImage = assets().getImage("images/other/smalltable.png");
-        ImageLayer tableLayer = graphics().createImageLayer(tableImage);
-        tableLayer.setOrigin(84/2,118/2);
-        tableLayer.setTranslation(500f, 14f / M_PER_PIXEL);
-        layer.add(tableLayer);
 
-        Image sofaImage = assets().getImage("images/other/sofa300-300.png");
-        ImageLayer sofaLayer = graphics().createImageLayer(sofaImage);
-        sofaLayer.setSize(150,150);
-        sofaLayer.setOrigin(75,75);
-        sofaLayer.setTranslation(300,13.5f/M_PER_PIXEL);
+        timeLayer = graphics().createImageLayer(assets().getImage("images/other/bar.png"));
+        timeLayer.setSize(200,40);
+        layer.add(timeLayer.setTranslation(150f, 10f));
+
+        layer.add(graphics().createImageLayer(assets().getImage("images/other/Time-icon.png")).setTranslation(100f,10f));
+
+        ImageLayer cheeseLayer = graphics().createImageLayer(assets().getImage("images/sprite/cheese.png"));
+        cheeseLayer.addListener(new Pointer.Adapter() {
+            @Override
+            public void onPointerEnd(Pointer.Event event) {
+                super.onPointerEnd(event);
+                if (i < 3) {
+                    cheeses.add(new Cheese(world, 120f, 16f / M_PER_PIXEL));
+                    layer.add(cheeses.get(i).layer());
+                    i++;
+                }
+            }
+        });
+        layer.add(cheeseLayer.setOrigin(26,21).setTranslation(400,30));
+
+        layer.add(graphics().createImageLayer(assets().getImage("images/other/smalltable.png"))
+                .setOrigin(84/2,118/2).setTranslation(500f,14f/M_PER_PIXEL));
+
+        ImageLayer sofaLayer = graphics().createImageLayer(assets().getImage("images/other/sofa300-300.png"));
+        sofaLayer.setSize(150, 150);
+        sofaLayer.setOrigin(75,75).setTranslation(300, 13.5f / M_PER_PIXEL);
         layer.add(sofaLayer);
 
         createWorld();
-        createBox(world,500f*M_PER_PIXEL,14f,84,110);
-        createBox(world,300*M_PER_PIXEL,14f,150,150);
+
+        createBox(world,300*M_PER_PIXEL,14f,150,150);//sofa
+        createBox(world, 500f * M_PER_PIXEL, 14f, 84, 110);//table
+
 //        createBox(world,300f*M_PER_PIXEL,13.5f,30,150);
 //        createBox(world,400f*M_PER_PIXEL,10f,100,30);
 
@@ -99,34 +119,35 @@ public class GameScreen extends Screen {
 
         l = new Oldlady(100f,10f/M_PER_PIXEL);
         layer.add(l.layer());
-        cheeses.add(new Cheese(world,120f,16f/M_PER_PIXEL));
-        for (Cheese nc:cheeses){
-            layer.add(nc.layer());
-        }
 
         pointer().setListener(new Pointer.Adapter() {
             @Override
             public void onPointerEnd(Pointer.Event event) {
-                powerLayer.setSize(powerbar.width(),powerbar.height());
+                //powerLayer.setSize(powerbar.width(),powerbar.height());
                 m.micethrow();
-                i+=1;
-                if (i<3){
-                    cheeses.add(new Cheese(world,120f,16f/M_PER_PIXEL));
-                    layer.add(cheeses.get(i).layer());
-                }
-
-
             }
+
             @Override
             public void onPointerDrag(Pointer.Event event) {
-                powerLayer.setSize(powerbar.width()+((powerLayer.width()/event.localX())),powerbar.height());
-           }
+                //powerLayer.setSize(powerbar.width()+((powerLayer.width()/event.localX())),powerbar.height());
+            }
         });
+        hasLoaded=true;
     }
 
     @Override
     public void update(int delta) {
         super.update(delta);
+        if (!hasLoaded)return;
+        if (win==true&&lose==false){
+            System.out.println("win state 1");
+            lose=false;
+            win=false;
+            ss.push(new WinLoseScreen(ss,win,state));
+        }else if (lose==true&&win==false){
+            System.out.println("false state 1");
+            ss.push(new WinLoseScreen(ss,win,state));
+        }
         for (Cheese nc : cheeses){
             nc.update(delta);
         }
@@ -139,22 +160,28 @@ public class GameScreen extends Screen {
     @Override
     public void paint(Clock clock) {
         super.paint(clock);
-        for (Cheese nc : cheeses){
-            nc.paint(clock);
-        }
-        v.paint(clock);
-        m.paint(clock);
-        l.paint(clock);
-        if (showDebugDraw){
-            debugDraw.getCanvas().clear();
-            world.drawDebugData();
-        }
-    }
+        if (!hasLoaded)return;
+//        if (showDebugDraw){
+//            debugDraw.getCanvas().clear();
+//            world.drawDebugData();
+//        }
 
-    public GameScreen(ScreenStack ss){
-        this.ss = ss;
-    }
+        if(timeLayer.width()>=1f){
 
+            timeLayer.setSize(timeLayer.width() - (0.1f), timeLayer.height());
+            for (Cheese nc : cheeses){
+                nc.paint(clock);
+
+            }
+            v.paint(clock);
+            m.paint(clock);
+            l.paint(clock);
+        }else if (timeLayer.width()<1f){
+            win=false;
+            lose=true;
+        }
+
+    }
     public Body createWorld(){
         //create world
         Vec2 gravity = new Vec2(0.0f,10.0f);
@@ -172,12 +199,29 @@ public class GameScreen extends Screen {
                             (contact.getFixtureB().getBody()==nc.getBody())){
                         v.contact(contact);
                         nc.contact(contact);
+
                     }
                 }
             }
 
             @Override
             public void endContact(Contact contact) {
+                for (Cheese nc:cheeses){
+                    if ((contact.getFixtureA().getBody()==nc.getBody())&&(contact.getFixtureB().getBody()==v.getBody())){
+                        v.contact(contact);
+                        nc.contact(contact);
+                        win=true;
+                    }else if ((contact.getFixtureA().getBody()==v.getBody())&&
+                            (contact.getFixtureB().getBody()==nc.getBody())){
+                        v.contact(contact);
+                        nc.contact(contact);
+                        win=true;
+                    }
+//
+//                    if ((contact.getFixtureA().getBody()==nc.getBody())||(contact.getFixtureB().getBody()==nc.getBody())){
+//                        nc.contact(contact);
+//                    }
+                }
             }
 
             @Override
@@ -206,9 +250,7 @@ public class GameScreen extends Screen {
             world.setDebugDraw(debugDraw);
 
         }
-        ////////////
 
-        ////create ground
         ground = world.createBody(new BodyDef());
         PolygonShape groundShape = new PolygonShape();
         //ground

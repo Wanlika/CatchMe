@@ -39,7 +39,7 @@ public class SpriteLoader {
     }
 
     /**
-     * Return a {@link Sprite}, given a path to the image and a path to the json sprite description.
+     * Return a {@link sut.game01.core.sprite.Sprite}, given a path to the image and a path to the json sprite description.
      * <p/>
      * json data should be in the following format:
      * <p/>
@@ -97,7 +97,7 @@ public class SpriteLoader {
     }
 
     /**
-     * Return a {@link Sprite}, given a path to the json sprite description.
+     * Return a {@link sut.game01.core.sprite.Sprite}, given a path to the json sprite description.
      * <p/>
      * json data should be in the following format:
      * <p/>
@@ -162,8 +162,8 @@ public class SpriteLoader {
      * <p/>
      * If images is null, the images urls are parsed from the json.
      *
-     * @param images Image to associate with each {@link SpriteImage}, or null to parse from the json
-     * @param sprite Sprite to store the {@link SpriteImage}s
+     * @param images Image to associate with each {@link sut.game01.core.sprite.SpriteImage}, or null to parse from the json
+     * @param sprite Sprite to store the {@link sut.game01.core.sprite.SpriteImage}s
      * @param json   json to parse
      */
     private static void parseJson(Image[] images, Sprite sprite, String json) {

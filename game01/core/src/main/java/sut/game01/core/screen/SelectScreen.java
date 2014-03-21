@@ -45,7 +45,7 @@ public class SelectScreen extends UIScreen{
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 super.onPointerEnd(event);
-                ss.push(new GameScreen(ss));
+                ss.push(new StateOne(ss));
             }
         });
 
@@ -77,11 +77,25 @@ public class SelectScreen extends UIScreen{
         ImageLayer fourLayer = graphics().createImageLayer(four);
         fourLayer.setOrigin(50,50);
         fourLayer.setTranslation(430f,400f);
+        fourLayer.addListener(new Pointer.Adapter(){
+            @Override
+            public void onPointerEnd(Pointer.Event event) {
+                super.onPointerEnd(event);
+                ss.push(new StateFour(ss));
+            }
+        });
 
         Image five = assets().getImage("images/other/five.png");
         ImageLayer fiveLayer = graphics().createImageLayer(five);
         fiveLayer.setOrigin(50,50);
         fiveLayer.setTranslation(550f,400f);
+        fiveLayer.addListener(new Pointer.Adapter(){
+            @Override
+            public void onPointerEnd(Pointer.Event event) {
+                super.onPointerEnd(event);
+                ss.push(new StateFive(ss));
+            }
+        });
 
         layer.add(oneLayer);
         layer.add(twoLayer);

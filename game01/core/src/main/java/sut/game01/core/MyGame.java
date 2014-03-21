@@ -27,8 +27,6 @@ public class MyGame extends Game.Default {
             }
         });
 
-
-
 //   ss.push(new HomeScreen(ss));
     }
 

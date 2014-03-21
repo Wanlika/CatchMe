@@ -52,7 +52,7 @@ public class HomeScreen extends UIScreen {
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 super.onPointerEnd(event);
-                ss.push(new SettingScreen(ss));
+                ss.push(new TestScreen(ss));
             }
         });
         layer.add(settingLayer);

@@ -63,6 +63,7 @@ public class Cat {
         if (e > 150){
             switch (state){
                 case RUN:offset=0;
+
                     break;
                 case HIT: offset =0;
                     n = n+60;

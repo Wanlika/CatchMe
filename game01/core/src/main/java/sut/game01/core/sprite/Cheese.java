@@ -105,8 +105,8 @@ public class Cheese {
 //                mouseJoint=null;
                 x_end = event.localX();
                 y_end = event.localY();
-                body.applyForce(new Vec2((x_start - x_end) * (x_start - x_end) / 6, (y_start - y_end) * (y_start - y_end) / 4), body.getPosition());
-
+                //body.applyForce(new Vec2((x_start - x_end) * (x_start - x_end) / 6, (y_start - y_end) * (y_start - y_end) / 4), body.getPosition());
+                body.applyLinearImpulse(new Vec2((x_start - x_end) / 6, (y_start - y_end) / 6), body.getPosition());
             }
 
             @Override

@@ -46,6 +46,7 @@ public class Mice {
             public void onSuccess(Sprite result) {
                 sprite.setSprite(spriteIndex);
                 sprite.layer().setOrigin((sprite.width()) / 2f, (sprite.height()) / 2f);
+
                 sprite.layer().setTranslation(x_px, y_px);
                 hasLoaded = true;
                 y = y_px;
@@ -77,7 +78,7 @@ public class Mice {
                     state = State.IDLE;
                     break;
                 case RUN: offset =4;
-//                    n = n+40;
+                    n = n+50;
                     break;
 
             }
@@ -90,19 +91,27 @@ public class Mice {
     public void micethrow(){
         state = State.THROW;
         spriteIndex = 0;
+
+    }
+
+    public void run(){
+        state = State.RUN;
+        spriteIndex = -1;
+        sprite.layer().setSize(120f,80f);
     }
     public void paint(Clock clock) {
         if (!hasLoaded)return;
-//        if ((x+n)>=640+sprite.layer().width()){
-//            sprite.layer().setTranslation(x,y);
-//            offset = 0;
-//            spriteIndex=-1;
-//            n = 0;
-//        }
-//        else {
-//            sprite.layer().setTranslation(x+n,y);
-//        }
-          sprite.layer().setTranslation(x,y);
+        if (state==State.RUN){
+            if ((x+n)>=640+sprite.layer().width()){
+                sprite.layer().setTranslation(x,y);
+                offset = 0;
+                spriteIndex=-1;
+                n = 0;
+            }
+            else {
+                sprite.layer().setTranslation(x+n,y);
+            }
+        }
 
     }
 

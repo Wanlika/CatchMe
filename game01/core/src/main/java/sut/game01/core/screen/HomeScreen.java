@@ -33,26 +33,26 @@ public class HomeScreen extends UIScreen {
         Image bgImage = assets().getImage("images/other/bgCatchMe2.png");
         ImageLayer bgLayer = graphics().createImageLayer(bgImage);
         layer.add(bgLayer);
-        Image startImage = assets().getImage("images/other/SelectButton.png");
+        Image startImage = assets().getImage("images/other/StartButton.png");
         ImageLayer startLayer = graphics().createImageLayer(startImage);
         startLayer.setTranslation(170f,360f);
         startLayer.addListener(new Pointer.Adapter(){
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 super.onPointerEnd(event);
-                ss.push(new SelectScreen(ss));
+                ss.push(new StateOne(ss));
             }
         });
         layer.add(startLayer);
 
-        Image settingImage = assets().getImage("images/other/SettingButton.png");
+        Image settingImage = assets().getImage("images/other/SelectButton.png");
         ImageLayer settingLayer = graphics().createImageLayer(settingImage);
         settingLayer.setTranslation(320f,360f);
         settingLayer.addListener(new Pointer.Adapter(){
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 super.onPointerEnd(event);
-                ss.push(new TestScreen(ss));
+                ss.push(new SelectScreen(ss));
             }
         });
         layer.add(settingLayer);

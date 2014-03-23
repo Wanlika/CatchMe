@@ -3,8 +3,11 @@ package sut.game01.core.sprite;
 import org.jbox2d.dynamics.Body;
 import playn.core.Layer;
 import playn.core.PlayN;
+import playn.core.Sound;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
+
+import static playn.core.PlayN.assets;
 
 /**
  * Created by Yambok on 9/3/2557.
@@ -21,7 +24,8 @@ public class Oldlady {
     private float y;
     private float x;
     private int n;
-
+    private Sound run = assets().getSound("sounds/running");
+    private boolean sound=false;
     public enum State{
         IDLE,WAKE,RUN
     };
@@ -59,14 +63,19 @@ public class Oldlady {
 
         if (!hasLoaded) return;
 
+        if (sound){
+            if (!run.isPlaying()){
+                run.play();
+            }
+        }
         e+=delta;
-        if (e > 500){
+        if (e > 150){
             switch (state){
                 case IDLE:offset=0;
                     break;
                 case RUN: offset =4;
-//                    n = n+50;
-
+                    sound=true;
+                    n = n+60;
                     break;
 
             }
@@ -79,17 +88,25 @@ public class Oldlady {
 
     public void paint(Clock clock) {
         if (!hasLoaded)return;
-//        if ((x+n)>=640+sprite.layer().width()){
-//            sprite.layer().setTranslation(x,y);
-//            offset = 0;
-//            spriteIndex=-1;
-//            n = 0;
-//        }
-//        else {
-//            sprite.layer().setTranslation(x+n,y);
-//        }
-        sprite.layer().setTranslation(x,y);
+        if (state==State.RUN){
+            if ((x+n)>=640+sprite.layer().width()){
+                sprite.layer().setTranslation(x,y);
+                offset = 0;
+                spriteIndex=-1;
+                n = 0;
+            }
+            else {
+                sprite.layer().setTranslation(x+n,y);
+            }
+        }
 
+
+    }
+
+    public void run(){
+        state = State.RUN;
+        spriteIndex=-1;
+        sprite.layer().setSize(100f,140f);
     }
 
     public Body getBody(){

@@ -3,8 +3,11 @@ package sut.game01.core.sprite;
 import org.jbox2d.dynamics.Body;
 import playn.core.Layer;
 import playn.core.PlayN;
+import playn.core.Sound;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
+
+import static playn.core.PlayN.assets;
 
 /**
  * Created by Yambok on 9/3/2557.
@@ -21,6 +24,7 @@ public class Cat {
     private float y;
     private float x;
     private int n;
+    private Sound sc = assets().getSound("sounds/cat");
 
     public enum State{
         HIT,RUN
@@ -58,15 +62,17 @@ public class Cat {
     public void update(int delta){
 
         if (!hasLoaded) return;
-
+        if (!sc.isPlaying()){
+            sc.play();
+        }
         e+=delta;
         if (e > 150){
             switch (state){
                 case RUN:offset=0;
-
+                    n+=60;
                     break;
                 case HIT: offset =0;
-                    n = n+60;
+                    n = n+50;
 
                     break;
 
@@ -80,20 +86,27 @@ public class Cat {
 
     public void paint(Clock clock) {
         if (!hasLoaded)return;
-//        if ((x+n)>=640+sprite.layer().width()){
-//            sprite.layer().setTranslation(x,y);
-//            offset = 0;
-//            spriteIndex=-1;
-//            n = 0;
-//        }
-//        else {
-//            sprite.layer().setTranslation(x+n,y);
-//        }
-        sprite.layer().setTranslation(x,y);
+        if (state == State.RUN){
+            if ((x+n)>=640+sprite.layer().width()){
+                sprite.layer().setTranslation(x,y);
+                offset = 0;
+                spriteIndex=-1;
+                n = 0;
+            }
+            else {
+                sprite.layer().setTranslation(x+n,y);
+            }
+        }
 
     }
 
     public Body getBody(){
         return this.body;
+    }
+
+    public void run(){
+        state = State.RUN;
+        spriteIndex=-1;
+        sprite.layer().setSize(100f,140f);
     }
 }

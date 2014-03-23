@@ -52,7 +52,8 @@ public class StateOne extends Screen {
     private ArrayList<Cheese> cheeses = new ArrayList<Cheese>();
     private ArrayList<Block> blocks = new ArrayList<Block>();
     private int i=0;
-
+    private Sound snore = assets().getSound("sounds/snore");
+    private boolean sound=true;
 
     public StateOne(ScreenStack ss){
         this.ss = ss;
@@ -69,6 +70,7 @@ public class StateOne extends Screen {
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 //ss.remove(GameScreen.this);
+                snore.stop();
                 ss.push(new HomeScreen(ss));
             }
         });
@@ -77,7 +79,6 @@ public class StateOne extends Screen {
         timeLayer = graphics().createImageLayer(assets().getImage("images/other/bar.png"));
         timeLayer.setSize(200,40);
         layer.add(timeLayer.setTranslation(150f, 10f));
-
         layer.add(graphics().createImageLayer(assets().getImage("images/other/Time-icon.png")).setTranslation(100f,10f));
 
         ImageLayer cheeseLayer = graphics().createImageLayer(assets().getImage("images/sprite/cheese.png"));
@@ -94,6 +95,21 @@ public class StateOne extends Screen {
             }
         });
         layer.add(cheeseLayer.setOrigin(26,21).setTranslation(400,30));
+
+        ImageLayer speaker = graphics().createImageLayer(assets().getImage("images/other/speaker.png"));
+        speaker.setTranslation(450f,10f);
+        speaker.addListener(new Pointer.Adapter(){
+            @Override
+            public void onPointerEnd(Pointer.Event event) {
+                super.onPointerEnd(event);
+                if (sound==true){
+                    sound=false;
+                }else if (sound==false){
+                    sound=true;
+                }
+            }
+        });
+        layer.add(speaker);
 
         layer.add(graphics().createImageLayer(assets().getImage("images/other/smalltable.png"))
                 .setOrigin(84/2,118/2).setTranslation(500f,14f/M_PER_PIXEL));
@@ -151,16 +167,22 @@ public class StateOne extends Screen {
         super.update(delta);
         if (!hasLoaded)return;
         ////check status
-        if (win==true&&lose==false){
-            System.out.println("win state 1");
-            lose=false;
-            win=false;
-            ss.push(new WinLoseScreen(ss,win,lose,state));
-        }else if (lose==true&&win==false){
-            System.out.println("false state 1");
-            ss.push(new WinLoseScreen(ss,win,lose,state));
+//        if (win==true&&lose==false){
+//            System.out.println("win state 1");
+//            lose=false;
+//            win=false;
+//            ss.push(new WinLoseScreen(ss,win,lose,state,point));
+//        }else if (lose==true&&win==false){
+//            System.out.println("false state 1");
+//            ss.push(new WinLoseScreen(ss,win,lose,state,point));
+//        }
+        if (sound){
+            if (!snore.isPlaying()){
+                snore.play();
+            }
+        }else if (!sound){
+            snore.stop();
         }
-
         for (Block nb: blocks){
             nb.update(delta);
         }
@@ -183,6 +205,7 @@ public class StateOne extends Screen {
         }
         ///time out
         if(timeLayer.width()>=1f){
+
             timeLayer.setSize(timeLayer.width() - (0.1f), timeLayer.height());
             for (Block nb: blocks){
                 nb.paint(clock);
@@ -195,8 +218,12 @@ public class StateOne extends Screen {
             m.paint(clock);
             l.paint(clock);
         }else if (timeLayer.width()<1f){
+            if (!snore.isPlaying()){
+                snore.stop();
+            }
             win=false;
             lose=true;
+            ss.push(new WinLoseScreen(ss,win,lose,state,point));
         }
     }
 
@@ -219,14 +246,18 @@ public class StateOne extends Screen {
                     if ((contact.getFixtureA().getBody()==nc.getBody())&&(contact.getFixtureB().getBody()==v.getBody())){
                         point=point+(int)timeLayer.width();
                         System.out.println("Win point : " + point);
+                        snore.stop();
                         v.contact(contact);
                         win=true;
+                        ss.push(new WinLoseScreen(ss,win,lose,state,point));
                     }else if ((contact.getFixtureA().getBody()==v.getBody())&&
                             (contact.getFixtureB().getBody()==nc.getBody())){
                         point=point+(int)timeLayer.width();
                         System.out.println("Win point : " + point);
+                        snore.stop();
                         v.contact(contact);
                         win=true;
+                        ss.push(new WinLoseScreen(ss,win,lose,state,point));
                     }
                     if ((contact.getFixtureA().getBody()==nc.getBody())&&(contact.getFixtureB().getBody()!=ground)){
                         nc.contact(contact);
@@ -245,13 +276,17 @@ public class StateOne extends Screen {
                     if ((contact.getFixtureA().getBody()==nb.getBody())&&(contact.getFixtureB().getBody()==v.getBody())){
                         point=point+(int)timeLayer.width();
                         System.out.println("Win point : "+point);
+                        snore.stop();
                         v.contact(contact);
                         win=true;
+                        ss.push(new WinLoseScreen(ss,win,lose,state,point));
                     }else if ((contact.getFixtureA().getBody()==v.getBody())&&(contact.getFixtureB().getBody())==nb.getBody()){
                         point=point+(int)timeLayer.width();
                         System.out.println("Win point : "+point);
+                        snore.stop();
                         v.contact(contact);
                         win=true;
+                        ss.push(new WinLoseScreen(ss,win,lose,state,point));
                     }
                 }
             }

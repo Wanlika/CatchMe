@@ -29,6 +29,8 @@ import java.util.ArrayList;
  */
 public class StateFive extends Screen {
     private final ScreenStack ss;
+
+    private final static int state = 5;
     //convert px to meter
     public static float M_PER_PIXEL = 1/26.666667f;//size of world
     private static int width = 24;//640px in physics unit(meter)
@@ -42,13 +44,16 @@ public class StateFive extends Screen {
     private boolean win=false;
     private boolean lose=false;
     private Body ground;
-    private final static int state = 5;
+    private int point=5;
     private ImageLayer timeLayer;
     private Vase v;
     private Oldlady l;
     private Mice m;
     private ArrayList<Cheese> cheeses = new ArrayList<Cheese>();
+    private ArrayList<Block> blocks = new ArrayList<Block>();
     private int i=0;
+    private Sound snore = assets().getSound("sounds/snore");
+    private boolean sound=true;
 
 
     public StateFive(ScreenStack ss){
@@ -65,7 +70,7 @@ public class StateFive extends Screen {
         backLayer.addListener(new Pointer.Adapter() {
             @Override
             public void onPointerEnd(Pointer.Event event) {
-                //ss.remove(GameScreen.this);
+                snore.stop();
                 ss.push(new HomeScreen(ss));
             }
         });
@@ -74,7 +79,6 @@ public class StateFive extends Screen {
         timeLayer = graphics().createImageLayer(assets().getImage("images/other/bar.png"));
         timeLayer.setSize(200,40);
         layer.add(timeLayer.setTranslation(150f, 10f));
-
         layer.add(graphics().createImageLayer(assets().getImage("images/other/Time-icon.png")).setTranslation(100f,10f));
 
         ImageLayer cheeseLayer = graphics().createImageLayer(assets().getImage("images/sprite/cheese.png"));
@@ -86,28 +90,52 @@ public class StateFive extends Screen {
                     cheeses.add(new Cheese(world, 120f, 16f / M_PER_PIXEL));
                     layer.add(cheeses.get(i).layer());
                     i++;
+                    point-=5;
                 }
             }
         });
         layer.add(cheeseLayer.setOrigin(26,21).setTranslation(400,30));
 
+        ImageLayer speaker = graphics().createImageLayer(assets().getImage("images/other/speaker.png"));
+        speaker.setTranslation(450f,10f);
+        speaker.addListener(new Pointer.Adapter(){
+            @Override
+            public void onPointerEnd(Pointer.Event event) {
+                super.onPointerEnd(event);
+                if (sound==true){
+                    sound=false;
+                }else if (sound==false){
+                    sound=true;
+                }
+            }
+        });
+        layer.add(speaker);
+
         layer.add(graphics().createImageLayer(assets().getImage("images/other/smalltable.png"))
                 .setOrigin(84/2,118/2).setTranslation(500f,14f/M_PER_PIXEL));
 
-        ImageLayer sofaLayer = graphics().createImageLayer(assets().getImage("images/other/sofa300-300.png"));
-        sofaLayer.setSize(150, 150);
-        sofaLayer.setOrigin(75,75).setTranslation(300, 13.5f / M_PER_PIXEL);
-        layer.add(sofaLayer);
-//        createBox(world,300*M_PER_PIXEL,14f,150,150);
-
         createWorld();
+
         createBox(world, 500f * M_PER_PIXEL, 14f, 84, 110);//table
 
-        createBox(world,400f*M_PER_PIXEL,10f,100,30);
-        createBox(world, 400f*M_PER_PIXEL,400f,50,50);
-        createBox(world, 400f*M_PER_PIXEL,350f,50,50);
-        createBox(world, 400f*M_PER_PIXEL,300f,50,50);
-        createBox(world, 400f*M_PER_PIXEL,250f,50,50);
+        blocks.add(new Block(world,400f,400f,50f,50f));
+        blocks.add(new Block(world,400f,350f,50f,50f));
+        blocks.add(new Block(world,400f,300f,50f,50f));
+        blocks.add(new Block(world,400f,250f,50f,50f));
+        blocks.add(new Block(world,400f,200f,50f,50f));
+
+        blocks.add(new Block(world,600f,400f,50f,50f));
+        blocks.add(new Block(world,600f,350f,50f,50f));
+        blocks.add(new Block(world,600f,300f,50f,50f));
+        blocks.add(new Block(world,600f,250f,50f,50f));
+        blocks.add(new Block(world,600f,200f,50f,50f));
+
+        blocks.add(new Block(world,480f,180f,250f,20f));
+
+        //blocks.add(new Block(world,475f,250f,150f,20f));
+        for (Block nb:blocks){
+            layer.add(nb.layer());
+        }
 
         m = new Mice(70f,15f/M_PER_PIXEL);
         layer.add(m.layer());
@@ -121,13 +149,7 @@ public class StateFive extends Screen {
         pointer().setListener(new Pointer.Adapter() {
             @Override
             public void onPointerEnd(Pointer.Event event) {
-                //powerLayer.setSize(powerbar.width(),powerbar.height());
                 m.micethrow();
-            }
-
-            @Override
-            public void onPointerDrag(Pointer.Event event) {
-                //powerLayer.setSize(powerbar.width()+((powerLayer.width()/event.localX())),powerbar.height());
             }
         });
 
@@ -138,14 +160,15 @@ public class StateFive extends Screen {
     public void update(int delta) {
         super.update(delta);
         if (!hasLoaded)return;
-        if (win==true&&lose==false){
-            System.out.println("win state 5");
-            lose=false;
-            win=false;
-            ss.push(new WinLoseScreen(ss,win,lose,state));
-        }else if (lose==true&&win==false){
-            System.out.println("false state 5");
-            ss.push(new WinLoseScreen(ss,win,lose,state));
+        if (sound){
+            if (!snore.isPlaying()){
+                snore.play();
+            }
+        }else if (!sound){
+            snore.stop();
+        }
+        for (Block nb: blocks){
+            nb.update(delta);
         }
         for (Cheese nc : cheeses){
             nc.update(delta);
@@ -164,9 +187,13 @@ public class StateFive extends Screen {
             debugDraw.getCanvas().clear();
             world.drawDebugData();
         }
+        ///time out
         if(timeLayer.width()>=1f){
-            timeLayer.setSize(timeLayer.width() - (0.1f), timeLayer.height());
 
+            timeLayer.setSize(timeLayer.width() - (0.1f), timeLayer.height());
+            for (Block nb: blocks){
+                nb.paint(clock);
+            }
             for (Cheese nc : cheeses){
                 nc.paint(clock);
 
@@ -175,8 +202,12 @@ public class StateFive extends Screen {
             m.paint(clock);
             l.paint(clock);
         }else if (timeLayer.width()<1f){
+            if (!snore.isPlaying()){
+                snore.stop();
+            }
             win=false;
             lose=true;
+            ss.push(new WinLoseScreen(ss,win,lose,state,point));
         }
     }
 
@@ -190,36 +221,57 @@ public class StateFive extends Screen {
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
-                for (Cheese nc:cheeses){
-                    if ((contact.getFixtureA().getBody()==nc.getBody())&&(contact.getFixtureB().getBody()==v.getBody())){
-                        v.contact(contact);
-                        nc.contact(contact);
-                    }else if ((contact.getFixtureA().getBody()==v.getBody())&&
-                            (contact.getFixtureB().getBody()==nc.getBody())){
-                        v.contact(contact);
-                        nc.contact(contact);
-
-                    }
-                }
             }
 
             @Override
             public void endContact(Contact contact) {
+                if (!hasLoaded)return;
                 for (Cheese nc:cheeses){
                     if ((contact.getFixtureA().getBody()==nc.getBody())&&(contact.getFixtureB().getBody()==v.getBody())){
+                        point=point+(int)timeLayer.width();
+                        System.out.println("Win point : " + point);
+                        snore.stop();
                         v.contact(contact);
-                        nc.contact(contact);
                         win=true;
+                        ss.push(new WinLoseScreen(ss,win,lose,state,point));
                     }else if ((contact.getFixtureA().getBody()==v.getBody())&&
                             (contact.getFixtureB().getBody()==nc.getBody())){
+                        point=point+(int)timeLayer.width();
+                        System.out.println("Win point : " + point);
+                        snore.stop();
                         v.contact(contact);
-                        nc.contact(contact);
                         win=true;
+                        ss.push(new WinLoseScreen(ss,win,lose,state,point));
                     }
-//
-//                    if ((contact.getFixtureA().getBody()==nc.getBody())||(contact.getFixtureB().getBody()==nc.getBody())){
-//                        nc.contact(contact);
-//                    }
+                    if ((contact.getFixtureA().getBody()==nc.getBody())&&(contact.getFixtureB().getBody()!=ground)){
+                        nc.contact(contact);
+                        System.out.println("Cheese contracted");
+                    }else if ((contact.getFixtureA().getBody()!=ground)&&(contact.getFixtureB().getBody()==nc.getBody())){
+                        nc.contact(contact);
+                        System.out.println("Cheese contracted");
+                    }
+                }
+
+                for (Block nb:blocks){
+                    if ((contact.getFixtureA().getBody()==nb.getBody())||(contact.getFixtureB().getBody()==nb.getBody())){
+                        point+=1;
+                        System.out.println("Boom Point : "+point);
+                    }
+                    if ((contact.getFixtureA().getBody()==nb.getBody())&&(contact.getFixtureB().getBody()==v.getBody())){
+                        point=point+(int)timeLayer.width();
+                        System.out.println("Win point : "+point);
+                        snore.stop();
+                        v.contact(contact);
+                        win=true;
+                        ss.push(new WinLoseScreen(ss,win,lose,state,point));
+                    }else if ((contact.getFixtureA().getBody()==v.getBody())&&(contact.getFixtureB().getBody())==nb.getBody()){
+                        point=point+(int)timeLayer.width();
+                        System.out.println("Win point : "+point);
+                        snore.stop();
+                        v.contact(contact);
+                        win=true;
+                        ss.push(new WinLoseScreen(ss,win,lose,state,point));
+                    }
                 }
             }
 
@@ -252,17 +304,7 @@ public class StateFive extends Screen {
 
         ground = world.createBody(new BodyDef());
         PolygonShape groundShape = new PolygonShape();
-        //ground
         groundShape.setAsEdge(new Vec2(0f,16f),new Vec2(24f,16f));
-        ground.createFixture(groundShape,0f);
-        //left
-        groundShape.setAsEdge(new Vec2(1f,0f),new Vec2(1f,18f));
-        ground.createFixture(groundShape,0f);
-        //right
-        groundShape.setAsEdge(new Vec2(23f,0f),new Vec2(23f,18f));
-        ground.createFixture(groundShape,0f);
-        //top
-        groundShape.setAsEdge(new Vec2(0f,0f),new Vec2(24f,0f));
         ground.createFixture(groundShape,0f);
         return ground;
     }

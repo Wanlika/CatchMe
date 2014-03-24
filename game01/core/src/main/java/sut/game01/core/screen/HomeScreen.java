@@ -16,13 +16,8 @@ import static playn.core.PlayN.*;
  * Created by BkFamily on 21/1/2557.
  */
 public class HomeScreen extends UIScreen {
-    public static final Font TITLE_FONT = graphics().createFont(
-            "Helvetiva",
-            Font.Style.PLAIN,
-            24 );
-
+    private Sound intro = assets().getSound("sounds/intro");
     private final  ScreenStack  ss;
-    private Root root;
     public HomeScreen(ScreenStack ss){
         this.ss =ss;
     }
@@ -40,6 +35,7 @@ public class HomeScreen extends UIScreen {
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 super.onPointerEnd(event);
+                intro.stop();
                 ss.push(new StateOne(ss));
             }
         });
@@ -52,40 +48,18 @@ public class HomeScreen extends UIScreen {
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 super.onPointerEnd(event);
+                intro.stop();
                 ss.push(new SelectScreen(ss));
             }
         });
         layer.add(settingLayer);
-
-//        root.add(new Button("Start").onClick(new UnitSlot() {
-//            @Override
-//            public void onEmit() {
-//                ss.push(new GameScreen(ss));
-//            }
-//        }));
     }
 
-//    @Override
-//    public void wasShown() {
-//        super.wasShown();
-//        root =  iface.createRoot(
-//                AxisLayout.vertical().gap(15),
-//                SimpleStyles.newSheet(),layer);
-//        root.addStyles(Style.BACKGROUND.is(Background.
-//                bordered(0xFFCCCCCC, 0xFF99CCFF, 5).
-//                inset(5, 10)));
-//        root.setSize(width(),height());
-//        root.add(new Label("HomeScreen")
-//                .addStyles(Style.FONT.is(HomeScreen.TITLE_FONT)));
-//        root.add(new Button("Start").onClick(new UnitSlot(){
-//            public void onEmit(){
-//                ss.push(new GameScreen(ss));
-//            }
-//        }));
-//        root.add(new Button("Setting").onClick(new UnitSlot(){
-//            public void onEmit(){
-//                ss.push(new SettingScreen(ss));
-//            }
-//        }));
-//    }
+    @Override
+    public void update(int delta) {
+        super.update(delta);
+        if (!intro.isPlaying()){
+            intro.play();
+        }
+    }
 }

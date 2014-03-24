@@ -3,6 +3,7 @@ package sut.game01.core.screen;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Pointer;
+import playn.core.Sound;
 import tripleplay.game.ScreenStack;
 import tripleplay.game.UIScreen;
 
@@ -14,7 +15,7 @@ import static playn.core.PlayN.graphics;
  */
 public class SelectScreen extends UIScreen{
     private final ScreenStack ss;
-
+    private Sound intro = assets().getSound("sounds/intro");
     public SelectScreen(ScreenStack ss) {
         this.ss = ss;
     }
@@ -45,6 +46,7 @@ public class SelectScreen extends UIScreen{
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 super.onPointerEnd(event);
+                intro.stop();
                 ss.push(new StateOne(ss));
             }
         });
@@ -57,6 +59,7 @@ public class SelectScreen extends UIScreen{
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 super.onPointerEnd(event);
+                intro.stop();
                 ss.push(new StateTwo(ss));
             }
         });
@@ -69,6 +72,7 @@ public class SelectScreen extends UIScreen{
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 super.onPointerEnd(event);
+                intro.stop();
                 ss.push(new StateThree(ss));
             }
         });
@@ -81,6 +85,7 @@ public class SelectScreen extends UIScreen{
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 super.onPointerEnd(event);
+                intro.stop();
                 ss.push(new StateFour(ss));
             }
         });
@@ -93,6 +98,7 @@ public class SelectScreen extends UIScreen{
             @Override
             public void onPointerEnd(Pointer.Event event) {
                 super.onPointerEnd(event);
+                intro.stop();
                 ss.push(new StateFive(ss));
             }
         });
@@ -102,5 +108,14 @@ public class SelectScreen extends UIScreen{
         layer.add(threeLayer);
         layer.add(fourLayer);
         layer.add(fiveLayer);
+
+    }
+
+    @Override
+    public void update(int delta) {
+        super.update(delta);
+        if (!intro.isPlaying()){
+            intro.play();
+        }
     }
 }

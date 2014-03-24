@@ -63,7 +63,7 @@ public class StateOne extends Screen {
     public void wasAdded(){
         super.wasAdded();
         layer.add(graphics().createImageLayer(assets().getImage("images/other/bgRoom.png")));
-        ImageLayer backLayer = graphics().createImageLayer(assets().getImage("images/other/backbutton86-86.png"));
+        ImageLayer backLayer = graphics().createImageLayer(assets().getImage("images/other/backbutton.png"));
         backLayer.setSize(50, 50);
         backLayer.setOrigin(25,25).setTranslation(50f, 30);
         backLayer.addListener(new Pointer.Adapter() {
@@ -96,8 +96,9 @@ public class StateOne extends Screen {
         });
         layer.add(cheeseLayer.setOrigin(26,21).setTranslation(400,30));
 
-        ImageLayer speaker = graphics().createImageLayer(assets().getImage("images/other/speaker.png"));
-        speaker.setTranslation(450f,10f);
+        ImageLayer speaker = graphics().createImageLayer(assets().getImage("images/other/soundbutton.png"));
+
+        speaker.setOrigin(25f,25f).setTranslation(470f, 30f);
         speaker.addListener(new Pointer.Adapter(){
             @Override
             public void onPointerEnd(Pointer.Event event) {
@@ -110,6 +111,19 @@ public class StateOne extends Screen {
             }
         });
         layer.add(speaker);
+
+        ImageLayer replay = graphics().createImageLayer(assets().getImage("images/other/replaybutton.png"));
+
+        replay.setOrigin(25f,25f).setTranslation(530f, 30f);
+        replay.addListener(new Pointer.Adapter() {
+            @Override
+            public void onPointerEnd(Pointer.Event event) {
+                super.onPointerEnd(event);
+                snore.stop();
+                ss.push(new StateOne(ss));
+            }
+        });
+        layer.add(replay);
 
         layer.add(graphics().createImageLayer(assets().getImage("images/other/smalltable.png"))
                 .setOrigin(84/2,118/2).setTranslation(500f,14f/M_PER_PIXEL));
@@ -130,7 +144,7 @@ public class StateOne extends Screen {
         blocks.add(new Block(world,600f,250f,50f,50f));
         blocks.add(new Block(world,600f,200f,50f,50f));
 
-        blocks.add(new Block(world,480f,180f,250f,20f));
+        blocks.add(new Block(world,500f,180f,250f,20f));
 
         //blocks.add(new Block(world,475f,250f,150f,20f));
         for (Block nb:blocks){
@@ -218,9 +232,7 @@ public class StateOne extends Screen {
             m.paint(clock);
             l.paint(clock);
         }else if (timeLayer.width()<1f){
-            if (!snore.isPlaying()){
-                snore.stop();
-            }
+            snore.stop();
             win=false;
             lose=true;
             ss.push(new WinLoseScreen(ss,win,lose,state,point));

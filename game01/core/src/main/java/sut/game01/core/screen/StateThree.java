@@ -64,12 +64,13 @@ public class StateThree extends Screen {
     public void wasAdded(){
         super.wasAdded();
         layer.add(graphics().createImageLayer(assets().getImage("images/other/bgRoom.png")));
-        ImageLayer backLayer = graphics().createImageLayer(assets().getImage("images/other/backbutton86-86.png"));
+        ImageLayer backLayer = graphics().createImageLayer(assets().getImage("images/other/backbutton.png"));
         backLayer.setSize(50, 50);
         backLayer.setOrigin(25,25).setTranslation(50f, 30);
         backLayer.addListener(new Pointer.Adapter() {
             @Override
             public void onPointerEnd(Pointer.Event event) {
+                //ss.remove(GameScreen.this);
                 snore.stop();
                 ss.push(new HomeScreen(ss));
             }
@@ -96,8 +97,9 @@ public class StateThree extends Screen {
         });
         layer.add(cheeseLayer.setOrigin(26,21).setTranslation(400,30));
 
-        ImageLayer speaker = graphics().createImageLayer(assets().getImage("images/other/speaker.png"));
-        speaker.setTranslation(450f,10f);
+        ImageLayer speaker = graphics().createImageLayer(assets().getImage("images/other/soundbutton.png"));
+
+        speaker.setOrigin(25f,25f).setTranslation(470f, 30f);
         speaker.addListener(new Pointer.Adapter(){
             @Override
             public void onPointerEnd(Pointer.Event event) {
@@ -111,6 +113,19 @@ public class StateThree extends Screen {
         });
         layer.add(speaker);
 
+        ImageLayer replay = graphics().createImageLayer(assets().getImage("images/other/replaybutton.png"));
+
+        replay.setOrigin(25f,25f).setTranslation(530f, 30f);
+        replay.addListener(new Pointer.Adapter() {
+            @Override
+            public void onPointerEnd(Pointer.Event event) {
+                super.onPointerEnd(event);
+                snore.stop();
+                ss.push(new StateThree(ss));
+            }
+        });
+        layer.add(replay);
+
         layer.add(graphics().createImageLayer(assets().getImage("images/other/smalltable.png"))
                 .setOrigin(84/2,118/2).setTranslation(500f,14f/M_PER_PIXEL));
 
@@ -118,19 +133,15 @@ public class StateThree extends Screen {
 
         createBox(world, 500f * M_PER_PIXEL, 14f, 84, 110);//table
 
-        blocks.add(new Block(world,400f,400f,50f,50f));
-        blocks.add(new Block(world,400f,350f,50f,50f));
-        blocks.add(new Block(world,400f,300f,50f,50f));
-        blocks.add(new Block(world,400f,250f,50f,50f));
-        blocks.add(new Block(world,400f,200f,50f,50f));
+        blocks.add(new Block(world,400f,400f,25f,120f));
+        blocks.add(new Block(world,440f,400f,25f,140f));
+        //blocks.add(new Block(world,430f,310f,80f,20f));
+        blocks.add(new Block(world,350f,400f,25f,130f));
+        blocks.add(new Block(world,375f,290f,80f,20f));
+        blocks.add(new Block(world,300f,400f,25f,150f));
+        blocks.add(new Block(world,325f,270f,80f,20f));
 
-        blocks.add(new Block(world,600f,400f,50f,50f));
-        blocks.add(new Block(world,600f,350f,50f,50f));
-        blocks.add(new Block(world,600f,300f,50f,50f));
-        blocks.add(new Block(world,600f,250f,50f,50f));
-        blocks.add(new Block(world,600f,200f,50f,50f));
 
-        blocks.add(new Block(world,480f,180f,250f,20f));
 
         for (Block nb:blocks){
             layer.add(nb.layer());
@@ -201,9 +212,7 @@ public class StateThree extends Screen {
             m.paint(clock);
             l.paint(clock);
         }else if (timeLayer.width()<1f){
-            if (!snore.isPlaying()){
-                snore.stop();
-            }
+            snore.stop();
             win=false;
             lose=true;
             ss.push(new WinLoseScreen(ss,win,lose,state,point));

@@ -4,6 +4,7 @@ import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.callbacks.DebugDraw;
 import org.jbox2d.collision.Manifold;
+import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 //import org.jbox2d.common.Vec2;
 import org.jbox2d.common.*;
@@ -22,6 +23,7 @@ import static playn.core.PlayN.*;
 import tripleplay.ui.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -127,27 +129,23 @@ public class StateFive extends Screen {
         layer.add(replay);
 
         layer.add(graphics().createImageLayer(assets().getImage("images/other/smalltable.png"))
-                .setOrigin(84/2,118/2).setTranslation(500f,14f/M_PER_PIXEL));
+                .setOrigin(84/2,118/2).setTranslation(600f,14f/M_PER_PIXEL));
 
         createWorld();
 
-        createBox(world, 500f * M_PER_PIXEL, 14f, 84, 110);//table
+        createBox(world, 600f * M_PER_PIXEL, 14f, 84, 110);//table
+        blocks.add(new Block(world,480f,410f,80f,30f));
 
-        blocks.add(new Block(world,400f,400f,50f,50f));
-        blocks.add(new Block(world,400f,350f,50f,50f));
-        blocks.add(new Block(world,400f,300f,50f,50f));
-        blocks.add(new Block(world,400f,250f,50f,50f));
-        blocks.add(new Block(world,400f,200f,50f,50f));
+        blocks.add(new Block(world, 440f, 400f, 25f, 100f));
+        blocks.add(new Block(world,540f,400f,25f,100f));
+        blocks.add(new Block(world,490f,350f,120f,20f));
 
-        blocks.add(new Block(world,600f,400f,50f,50f));
-        blocks.add(new Block(world,600f,350f,50f,50f));
-        blocks.add(new Block(world,600f,300f,50f,50f));
-        blocks.add(new Block(world,600f,250f,50f,50f));
-        blocks.add(new Block(world,600f,200f,50f,50f));
 
-        blocks.add(new Block(world,480f,180f,250f,20f));
+        blocks.add(new Block(world,460f,280f,25f,60f));
+        blocks.add(new Block(world,520f,280f,25f,60f));
+        blocks.add(new Block(world,490f,250f,80f,10f));
 
-        //blocks.add(new Block(world,475f,250f,150f,20f));
+        blocks.add(new Block(world,420f,400f,25f,120f));
         for (Block nb:blocks){
             layer.add(nb.layer());
         }
@@ -155,7 +153,7 @@ public class StateFive extends Screen {
         m = new Mice(70f,15f/M_PER_PIXEL);
         layer.add(m.layer());
 
-        v = new Vase(world,500f,12f/M_PER_PIXEL);
+        v = new Vase(world,505f,370f);
         layer.add(v.layer());
 
         l = new Oldlady(100f,10f/M_PER_PIXEL);
@@ -323,7 +321,6 @@ public class StateFive extends Screen {
     }
 
     public Body createBox(World world,float x,float y,float w,float h){
-
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
         bodyDef.position = new Vec2(0,0);

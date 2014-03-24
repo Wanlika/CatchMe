@@ -168,7 +168,7 @@ public class WinLoseScreen extends UIScreen {
     public void missioncomplete(){
         layer.add(graphics().createImageLayer(assets().getImage("images/other/bgwin-lose.png")));
         layer.add(graphics().createImageLayer(assets().getImage("images/other/missioncomplete.png")).setOrigin(200, 150).setTranslation(320f, 200f));
-        Image backImage = assets().getImage("images/other/backbutton86-86.png");
+        Image backImage = assets().getImage("images/other/homebutton.png");
         ImageLayer backLayer = graphics().createImageLayer(backImage);
         backLayer.setOrigin(25f, 25f);
         backLayer.setTranslation(320, 380);

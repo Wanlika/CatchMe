@@ -78,7 +78,7 @@ public class Mice {
                     state = State.IDLE;
                     break;
                 case RUN: offset =4;
-                    n = n+50;
+                    n = n+60;
                     break;
 
             }

@@ -204,7 +204,7 @@ public class Cheese {
         sprite.layer().setTranslation((body.getPosition().x/ GameScreen.M_PER_PIXEL),
                 (body.getPosition().y/GameScreen.M_PER_PIXEL));
         sprite.layer().setRotation(body.getAngle());
-        if (time>=6000){
+        if (time>=2500){
             sprite.layer().destroy();
             body.getWorld().destroyBody(body);
         }

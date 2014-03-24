@@ -26,7 +26,7 @@ public class SelectScreen extends UIScreen{
         ImageLayer bgLayer = graphics().createImageLayer(bgImage);
         Image backImage = assets().getImage("images/other/backbutton.png");
         ImageLayer backLayer = graphics().createImageLayer(backImage);
-        backLayer.setSize(100, 100);
+        backLayer.setSize(50, 50);
         backLayer.setOrigin(backLayer.width() / 2, backLayer.height() / 2);
         backLayer.setTranslation(50, 50);
         backLayer.addListener(new Pointer.Adapter() {

@@ -58,7 +58,7 @@ public class WinLoseScreen extends UIScreen {
 
         layer.add(graphics().createImageLayer(assets().getImage("images/other/bgwin-lose.png")));
         layer.add(graphics().createImageLayer(assets().getImage("images/other/you_win_300x230.png")).setOrigin(150f,115f).setTranslation(320f,130f));
-        Image nextImage = assets().getImage("images/other/nextbutton86-86.png");
+        Image nextImage = assets().getImage("images/other/nextbutton.png");
         ImageLayer nextLayer = graphics().createImageLayer(nextImage);
         nextLayer.setOrigin(25f, 25f);
         nextLayer.setTranslation(350, 330);
@@ -80,7 +80,7 @@ public class WinLoseScreen extends UIScreen {
         });
         layer.add(nextLayer);
 
-        Image backImage = assets().getImage("images/other/backbutton86-86.png");
+        Image backImage = assets().getImage("images/other/homebutton.png");
         ImageLayer backLayer = graphics().createImageLayer(backImage);
         backLayer.setOrigin(25f, 25f);
         backLayer.setTranslation(280, 330);
@@ -117,7 +117,7 @@ public class WinLoseScreen extends UIScreen {
     private void youLose(final int state) {
         layer.add(graphics().createImageLayer(assets().getImage("images/other/bgwin-lose.png")));
         layer.add(graphics().createImageLayer(assets().getImage("images/other/you_lose_300x230.png")).setOrigin(150f,115f).setTranslation(320f,150f));
-        Image playImage = assets().getImage("images/other/playbutton86-86.png");
+        Image playImage = assets().getImage("images/other/replaybutton.png");
         ImageLayer playLayer = graphics().createImageLayer(playImage);
         playLayer.setOrigin(25f,25f);
         playLayer.setTranslation(350, 310);
@@ -144,7 +144,7 @@ public class WinLoseScreen extends UIScreen {
         });
         layer.add(playLayer);
 
-        Image backImage = assets().getImage("images/other/backbutton86-86.png");
+        Image backImage = assets().getImage("images/other/homebutton.png");
         ImageLayer backLayer = graphics().createImageLayer(backImage);
         backLayer.setOrigin(25f, 25f);
         backLayer.setTranslation(280, 310);
